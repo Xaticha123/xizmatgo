@@ -2,3 +2,5 @@
 Формат — Keep a Changelog, версии — Semantic Versioning 2.0.0.
 
 ## [Unreleased]
+### Добавлено
+- Повтор завершённого заказа `repeat_order` (US-15, XG-15).
