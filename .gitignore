@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+# Секреты и локальные настройки (SR-07)
+.env
+*.env
+secrets/
+# IDE и ОС
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+# Временные файлы draw.io и Office
+*.bkp
+~$*
