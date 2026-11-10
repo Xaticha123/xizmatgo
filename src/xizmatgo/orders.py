@@ -9,6 +9,7 @@ class OrderNotFound(Exception): ...
 class OrderAlreadyTaken(Exception): ...
 class MasterNotVerified(Exception): ...
 class SlotBusy(Exception): ...
+class OrderNotRepeatable(Exception): ...
 
 
 @dataclass
@@ -44,3 +45,15 @@ class OrderService:
         self.repo.save(order)
         self.bus.publish({"type": "OrderAccepted", "order_id": order.id, "master_id": master_id})
         return order                                                # 11
+
+    def repeat_order(self, order_id: str, client_id: str, new_time: datetime, new_id: str) -> Order:
+        """US-15: создать новый заказ по завершённому заказу клиента на новое время."""
+        old = self.repo.find_by_id(order_id)
+        if old is None or getattr(old, "client_id", client_id) != client_id:
+            raise OrderNotFound(order_id)
+        if old.status not in (OrderStatus.COMPLETED, OrderStatus.PAID):
+            raise OrderNotRepeatable(order_id)
+        new = Order(new_id, new_time)
+        self.repo.save(new)
+        self.bus.publish({"type": "OrderCreated", "order_id": new_id, "repeat_of": order_id})
+        return new
